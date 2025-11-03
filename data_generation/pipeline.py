@@ -7,32 +7,44 @@ from tools import generate_arrow_dataset
 
 def create_arrow_dataset(n_samples=2000, output_dir="data", image_dir="images"):
     X, y = generate_arrow_dataset(n_samples=n_samples)
+            
+    # Create a DataFrame for labels if not existing
+    if not os.path.exists(os.path.join(output_dir, "labels.csv")):
+        
+        image_names = [f"arrow_{i}.png" for i in range(n_samples)]
+        
+        df = pd.DataFrame({
+            'image_name': image_names,
+            'angle': y
+        })
     
-    # check for existing files to avoid overwriting
-    max_index = check_max_in_directory(os.path.join(output_dir, image_dir))
-    if max_index >= 0:
-        start_index = max_index + 1
-    else:
-        start_index = 0
-    
-    # Create image names
-    image_names = [f"arrow_{i}.png" for i in range(start_index, start_index + n_samples)]
-
+    else:    
+        # check for existing files to avoid overwriting
+        max_index = check_max_in_directory(os.path.join(output_dir, image_dir))
+        if max_index >= 0:
+            start_index = max_index + 1
+        else:
+            start_index = 0
+        
+        # Create image names
+        image_names = [f"arrow_{i}.png" for i in range(start_index, start_index + n_samples)]
+        
+        df = pd.read_csv(os.path.join(output_dir, "labels.csv"))
+        new_df = pd.DataFrame({
+            'image_name': image_names,
+            'angle': y
+        })
+        df = pd.concat([df, new_df], ignore_index=True)
+        
     # save images in a directory
     os.makedirs(os.path.join(output_dir, image_dir), exist_ok=True)
     for i in range(n_samples):
         img_path = os.path.join(output_dir, image_dir, image_names[i])
         plt.imsave(img_path, X[i].squeeze(), cmap='gray')
-        
-    # Create a DataFrame for labels
-    df = pd.DataFrame({
-        'image_name': image_names,
-        'angle': y
-    })
     
     # Save labels to a CSV file
     csv_path = os.path.join(output_dir, "labels.csv")
-    df.to_csv(csv_path, index=False)
+    df.to_csv(csv_path, mode='w', index=False)
     print(f"Dataset created with {n_samples} samples.")
     
 
@@ -51,7 +63,7 @@ def check_max_in_directory(directory):
     
     
 if __name__ == "__main__":
-    create_arrow_dataset(n_samples=4900, output_dir="data", image_dir="images")
+    create_arrow_dataset(n_samples=97, output_dir="data", image_dir="images")
     
 
     
