@@ -63,7 +63,7 @@ def check_max_in_directory(directory):
     
     
 if __name__ == "__main__":
-    create_arrow_dataset(n_samples=97, output_dir="data", image_dir="images")
+    create_arrow_dataset(n_samples=9900, output_dir="data", image_dir="images")
     
 
     
