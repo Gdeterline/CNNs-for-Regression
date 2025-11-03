@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class CNN(nn.Module):
-    def __init__(self, input_channels=1, output_size=1, init_type='he'):
+    def __init__(self, input_channels=1, output_size=1, init_type='he', conv_activation_function= F.sigmoid, fc_activation_function= F.sigmoid):
         super(CNN, self).__init__()
         
         # --- Convolutional layers ---
@@ -16,6 +16,10 @@ class CNN(nn.Module):
         
         # --- Weight initialization ---
         self.init_weights(init_type)
+        
+        # --- Activation functions ---
+        self.conv_activation_function = conv_activation_function
+        self.fc_activation_function = fc_activation_function
 
     def init_weights(self, init_type='he'):
         """Initialize weights according to chosen strategy"""
