@@ -62,8 +62,8 @@ def check_max_in_directory(directory):
     return max_index
     
     
-if __name__ == "__main__":
-    create_arrow_dataset(n_samples=9900, output_dir="data", image_dir="images")
+#if __name__ == "__main__":
+    #create_arrow_dataset(n_samples=9900, output_dir="data", image_dir="images")
     
 
     
