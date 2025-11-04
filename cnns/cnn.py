@@ -10,8 +10,11 @@ class CNN(nn.Module):
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
         
+        # GAP sort un vecteur de taille 128
+        self.gap = nn.AdaptiveAvgPool2d(1)
+        
         # --- Fully connected layers ---
-        self.fc1 = nn.Linear(128 * 8 * 8, 256)  # For 64x64 input
+        self.fc1 = nn.Linear(128, 256)  # For 64x64 input
         self.fc2 = nn.Linear(256, output_size)
         
         # --- Weight initialization ---
@@ -46,6 +49,8 @@ class CNN(nn.Module):
         x = F.max_pool2d(x, 2)
         x = conv_activation_function(self.conv3(x))
         x = F.max_pool2d(x, 2)
+        
+        x = self.gap(x)              # (B, 128, 1, 1)
         
         # --- Flatten ---
         x = x.view(x.size(0), -1)
